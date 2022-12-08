@@ -23,16 +23,25 @@ public:
 	RSVector(const RSVector& another);
 	RSVector<T>& operator=(const RSVector<T>& another);
 	RSVector<T>& operator=( RSVector<T>&& another);
+    T& operator[](int index);
+    int push_back(T data );
+    T pop_back();
 	typedef T* iterator;
 	T* begin();
 	T* end();
+    bool operator==(const RSVector<T>& another);
+    bool operator< (const RSVector<T>& another);
 	T*& operator++();
 	T* operator*();
 	iterator operator+(iterator it);
 	void erase(iterator it);
 	void erase(iterator it1, iterator it2);
 	void insert(iterator it, T x);
-	int get_size();
+	int get_size() const;
+    int get_capacity() const;
+    int resize();
+    bool empty();
+    void clear();
 	friend ostream& operator<< <T>(ostream& output, const RSVector <T>& another);
 	~RSVector();
 };
@@ -48,7 +57,7 @@ inline RSVector<T>::RSVector(int x)
 	if (x < 0) {
 		cout << "INValid argument " << endl;
 	}
-	
+
 	if (x == 0) {
 		capacity = 0;
 		size = 0;
@@ -59,8 +68,8 @@ inline RSVector<T>::RSVector(int x)
 		ptr = new T[size];
 	}
 
-		
-	
+
+
 }
 
 template<typename T>
@@ -155,8 +164,8 @@ inline T* RSVector<T>::operator*()
 template<typename T>
 inline void RSVector<T>::erase(iterator it)
 {
-	// don't forget to check out of range 
-	
+	// don't forget to check out of range
+
 	int pos = it-ptr;
 	for (int i = pos; i < size; i++) {
 		ptr[i] = ptr[i + 1];
@@ -181,7 +190,7 @@ inline void RSVector<T>::erase(iterator it1, iterator it2)
 template<typename T>
 inline void RSVector<T>::insert(iterator it, T x)
 {
-	// don't forget to check the validation of input 
+	// don't forget to check the validation of input
 	/*
 	int pos = it - ptr;
 	int z = ptr[size - 1];
@@ -196,7 +205,7 @@ inline void RSVector<T>::insert(iterator it, T x)
 }
 
 template<typename T>
-inline int RSVector<T>::get_size()
+inline int RSVector<T>::get_size() const
 {
 	return size;
 }
@@ -218,3 +227,104 @@ inline ostream& operator<<(ostream& output, const RSVector<T>& another)
 }
 
 
+template<typename T>
+inline int RSVector<T>::push_back(T data) {
+    if(size == capacity){
+        T* newdata = new T[capacity*2];
+        for(int i = 0; i < size; i++){
+            newdata[i] = ptr[i];
+        }
+        delete[] ptr;
+        capacity*=2;
+        ptr = newdata;
+    }
+    ptr[size++] = data;
+    return size;
+}
+
+template<typename T>
+inline T RSVector<T>::pop_back(){
+    if(size>0){
+        size--;
+        return ptr[size];
+    }
+}
+
+template<typename T>
+inline T& RSVector<T>::operator[](int index)
+{
+    if(index>=size){
+        cout<<"Error array index is out of range"<<endl;
+        exit(-1);
+    }
+    return ptr[index];
+    /*try{
+        if(index >= size)
+            throw;
+        cout<<"yes";
+        return ptr[index];
+    }
+    catch (...){
+        cout<<"Error array index is out of range"<<endl;
+        exit(0);
+    }*/
+}
+
+template<typename T>
+inline int RSVector<T>::get_capacity() const
+{
+    return capacity;
+}
+
+template<typename T>
+inline bool RSVector<T>::empty() {
+    if(size==0)
+        return true;
+    return false;
+}
+
+template<typename T>
+inline int RSVector<T>::resize() {
+    T* newdata = new T[capacity*2];
+    for(int i = 0; i < size; i++){
+        newdata[i] = ptr[i];
+    }
+    delete[] ptr;
+    capacity*=2;
+    ptr = newdata;
+    return size;
+}
+
+template<typename T>
+inline void RSVector<T>::clear()
+{
+    for(int i=0;i<size;i++)
+        ptr[i].~T();
+    size=0;
+}
+
+template<typename T>
+inline bool RSVector<T>::operator==(const RSVector<T>& another)
+{
+    if(size!=another.size) {
+        return false;
+    }
+    for(int i=0;i<size;i++){
+        if(ptr[i]!=another.ptr[i]){
+            return false;
+        }
+    }
+    return true;
+}
+
+template<typename T>
+inline bool RSVector<T>::operator<(const RSVector<T>& another)
+{
+    for(int i=0;i<size;i++){
+        if(ptr[i]>another.ptr[i] ){
+            return false;
+        }
+    }
+    if(this->operator==(another))return false;
+    return true;
+}
