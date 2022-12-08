@@ -63,6 +63,7 @@ int main()
     cout<<rs12.operator==(rs13)<<endl;
     cout<<rs12.operator<(rs13)<<endl;
     rs12.clear();
+    cout<<rs12<<endl;
     cout<<rs12.empty()<<endl;
     cout<<rs13.empty()<<endl;
     cout<<rs13.get_capacity()<<endl;
