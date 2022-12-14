@@ -70,7 +70,7 @@ int Stack<T>::get_size() {
 }
 template <typename T>
 T Stack<T>::get_top() {
-    if(top==-1){
+    if(empty()){
         throw StackEmptyException();
     }else {
         T element = arr[top];
