@@ -22,7 +22,7 @@ public:
 	RSVector<T>& operator=(const RSVector<T>& another);
 	RSVector<T>& operator=(RSVector<T>&& another);
 	T& operator[](int index);
-	void push_back(const T& data);
+	int push_back(const T& data);
 	T pop_back();
 	typedef T* iterator;
 	T* begin();
@@ -45,7 +45,11 @@ public:
 };
 
 #endif
-
+/**
+ * @brief constructor takes size of vector or default=0
+ * @tparam T 
+ * @param x 
+*/
 template<typename T>
 inline RSVector<T>::RSVector(int x)
 {
@@ -53,19 +57,24 @@ inline RSVector<T>::RSVector(int x)
 	if (x < 0) {
 		cout << "INValid argument " << endl;
 	}
-
-	if (x == 0) {
-		capacity = 0;
-		size = 0;
+	else {
+		if (x == 0) {
+			capacity = 0;
+			size = 0;
+		}
+		else if (x > 0) {
+			size = x;
+			capacity = size * sizeof(T);
+			ptr = new T[size];
+		}
 	}
-	else if (x > 0) {
-		size = x;
-		capacity = size * sizeof(T);
-		ptr = new T[size];
-	}
-
 }
-
+/**
+ * @brief function Initialize by n items from array 
+ * @tparam T 
+ * @param arr 
+ * @param n 
+*/
 template<typename T>
 inline RSVector<T>::RSVector(T* arr, int n)
 {
@@ -77,7 +86,11 @@ inline RSVector<T>::RSVector(T* arr, int n)
 		//cout << ptr[i] << endl;
 	}
 }
-
+/**
+ * @brief function to make deep coping 
+ * @tparam T 
+ * @param another 
+*/
 template<typename T>
 inline RSVector<T>::RSVector(const RSVector& another)
 {
@@ -89,7 +102,12 @@ inline RSVector<T>::RSVector(const RSVector& another)
 		cout << ptr[i] << endl;
 	}
 }
-
+/**
+ * @brief function to overloade assignment operator 
+ * @tparam T 
+ * @param another 
+ * @return RSVector of type T
+*/
 template<typename T>
 inline RSVector<T>& RSVector<T>::operator=(const RSVector<T>& another)
 {
@@ -110,7 +128,12 @@ inline RSVector<T>& RSVector<T>::operator=(const RSVector<T>& another)
 	}
 	return *this;
 }
-
+/**
+ * @brief function move assignment operator 
+ * @tparam T 
+ * @param another 
+ * @return return RSVector of typr T
+*/
 template<typename T>
 inline RSVector<T>& RSVector<T>::operator=(RSVector<T>&& another)
 {
@@ -128,19 +151,32 @@ inline RSVector<T>& RSVector<T>::operator=(RSVector<T>&& another)
 	}
 	return *this;
 }
-
+/**
+ * @brief function to get the begin of the vector 
+ * @tparam T 
+ * @return address of the begin of the vector
+*/
 template<typename T>
 inline T* RSVector<T>::begin()
 {
 	return &ptr[0];
 }
-
+/**
+ * @brief function to get the end of the vector 
+ * @tparam T 
+ * @return address of the end of vector 
+*/
 template<typename T>
 inline T* RSVector<T>::end()
 {
 	return &ptr[size - 1];
 }
-
+/**
+ * @brief function to overloade operator * to iterator 
+ * @tparam T 
+ * @param it 
+ * @return ptr[it]
+*/
 template<typename T>
 inline const T& RSVector<T>::operator*(iterator it) const
 {
@@ -151,7 +187,11 @@ inline const T& RSVector<T>::operator*(iterator it) const
 		throw exception();
 	}
 }
-
+/**
+ * @brief function to overloade operator ++ to iterator 
+ * @tparam T 
+ * @return *(ptr)
+*/
 template<typename T>
 inline T& RSVector<T>::operator++()
 {
@@ -165,7 +205,12 @@ inline T& RSVector<T>::operator++()
 		throw exception();
 	}
 }
-
+/**
+ * @brief overloading operator+ to iterator 
+ * @tparam T 
+ * @param x 
+ * @return return *(ptr)
+*/
 template<typename T>
 inline T& RSVector<T>::operator+(int x)
 {
@@ -179,7 +224,11 @@ inline T& RSVector<T>::operator+(int x)
 		throw exception();
 	}
 }
-
+/**
+ * @brief function to erase the item which iterator refer to 
+ * @tparam T 
+ * @param it 
+*/
 template<typename T>
 inline void RSVector<T>::erase(iterator it)
 {
@@ -194,7 +243,12 @@ inline void RSVector<T>::erase(iterator it)
 		throw exception();
 	}
 }
-
+/**
+ * @brief function to erase from first iterator to second iterator 
+ * @tparam T 
+ * @param it1 
+ * @param it2 
+*/
 template<typename T>
 inline void RSVector<T>::erase(iterator it1, iterator it2)
 {
@@ -212,7 +266,12 @@ inline void RSVector<T>::erase(iterator it1, iterator it2)
 		throw exception();
 	}
 }
-
+/**
+ * @brief function to insert item in vector 
+ * @tparam T 
+ * @param it 
+ * @param x 
+*/
 template<typename T>
 inline void RSVector<T>::insert(iterator it, T x)
 {
@@ -228,13 +287,23 @@ inline void RSVector<T>::insert(iterator it, T x)
 		throw exception();
 	}
 }
-
+/**
+ * @brief function to get size of vector 
+ * @tparam T 
+ * @return size 
+*/
 template<typename T>
 inline int RSVector<T>::get_size() const
 {
 	return size;
 }
-
+/**
+ * @brief overloading << operator 
+ * @tparam T 
+ * @param output 
+ * @param another 
+ * @return ostream
+*/
 template<typename T>
 inline ostream& operator<<(ostream& output, const RSVector<T>& another)
 {
@@ -244,10 +313,14 @@ inline ostream& operator<<(ostream& output, const RSVector<T>& another)
 	}
 	return output;
 }
-
-
+/**
+ * @brief function to push item back to vector
+ * @tparam T 
+ * @param data 
+ * @return size
+*/
 template<typename T>
-void RSVector<T>::push_back(const T& data) {
+int RSVector<T>::push_back(const T& data) {
 	if (size < capacity) {
 		ptr[size++] = data;
 	}
@@ -265,9 +338,13 @@ void RSVector<T>::push_back(const T& data) {
 		delete[] newdata;
 		ptr[size++] = data;
 	}
-
+	return size;
 }
-
+/**
+ * @brief function to pop the last item in the vector
+ * @tparam T 
+ * @return T
+*/
 template<typename T>
 inline T RSVector<T>::pop_back() {
 	if (size > 0) {
@@ -278,7 +355,12 @@ inline T RSVector<T>::pop_back() {
 		throw exception();
 	}
 }
-
+/**
+ * @brief overloading operator[]
+ * @tparam T 
+ * @param index 
+ * @return T 
+*/
 template<typename T>
 inline T& RSVector<T>::operator[](int index)
 {
@@ -288,20 +370,32 @@ inline T& RSVector<T>::operator[](int index)
 	return ptr[index];
 	
 }
-
+/**
+ * @brief function to get the capacity of vector 
+ * @tparam T 
+ * @return capcity 
+*/
 template<typename T>
 inline int RSVector<T>::get_capacity() const
 {
 	return capacity;
 }
-
+/**
+ * @brief function to check if vector is empty or no 
+ * @tparam T 
+ * @return bool 
+*/
 template<typename T>
 inline bool RSVector<T>::empty() {
 	if (size == 0)
 		return true;
 	return false;
 }
-
+/**
+ * @brief function to resize vector 
+ * @tparam T 
+ * @return the new size of vector 
+*/
 template<typename T>
 inline int RSVector<T>::resize() {
 	if (capacity < 2 * size) {
@@ -316,7 +410,10 @@ inline int RSVector<T>::resize() {
 	size *= 2;
 	return size;
 }
-
+/**
+ * @brief function to clear the vector
+ * @tparam T 
+*/
 template<typename T>
 inline void RSVector<T>::clear()
 {
@@ -324,7 +421,12 @@ inline void RSVector<T>::clear()
 		ptr[i].~T();
 	size = 0;
 }
-
+/**
+ * @brief overloading == operator
+ * @tparam T 
+ * @param another 
+ * @return bool
+*/
 template<typename T>
 inline bool RSVector<T>::operator==(const RSVector<T>& another)
 {
@@ -338,7 +440,12 @@ inline bool RSVector<T>::operator==(const RSVector<T>& another)
 	}
 	return true;
 }
-
+/**
+ * @brief overloading operator <
+ * @tparam T 
+ * @param another 
+ * @return bool 
+*/
 template<typename T>
 inline bool RSVector<T>::operator<(const RSVector<T>& another)
 {
@@ -350,6 +457,10 @@ inline bool RSVector<T>::operator<(const RSVector<T>& another)
 	if (this->operator==(another))return false;
 	return true;
 }
+/**
+ * @brief Destructor delete memory to avoid memory leak
+ * @tparam T 
+*/
 template<typename T>
 inline RSVector<T>::~RSVector()
 {
